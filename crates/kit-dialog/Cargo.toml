@@ -1,0 +1,10 @@
+[package]
+name = "kit-dialog"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+kit-fs = { path = "../kit-fs", default-features = false }
+rfd.workspace = true

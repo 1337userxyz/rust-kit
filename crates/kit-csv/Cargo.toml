@@ -1,0 +1,12 @@
+[package]
+name = "kit-csv"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+kit-fs = { path = "../kit-fs", default-features = false }
+csv.workspace = true
+encoding_rs.workspace = true
+thiserror.workspace = true

@@ -1,0 +1,9 @@
+[package]
+name = "kit-launcher"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+kit-fs = { path = "../kit-fs", default-features = false }
