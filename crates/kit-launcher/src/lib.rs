@@ -9,6 +9,13 @@
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command};
 
+#[cfg(target_os = "windows")]
+fn no_window(cmd: &mut Command) -> &mut Command {
+    use std::os::windows::process::CommandExt;
+    const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+    cmd.creation_flags(CREATE_NO_WINDOW)
+}
+
 /// Öffnet einen Pfad (Datei oder Ordner) in der Standardanwendung des Betriebssystems.
 pub fn open_path(path: &Path) -> std::io::Result<Child> {
     let p = path.to_string_lossy();
@@ -64,7 +71,8 @@ pub fn open_in_terminal(dir: &Path) -> std::io::Result<Child> {
         if find_in_path("wt.exe").is_some() {
             return Command::new("wt").args(["-d", p.as_ref()]).spawn();
         }
-        Command::new("cmd")
+        let mut cmd = Command::new("cmd");
+        no_window(&mut cmd)
             .args([
                 "/C",
                 "start",
@@ -133,7 +141,8 @@ pub fn open_in_terminal(dir: &Path) -> std::io::Result<Child> {
 pub fn open_url(url: &str) -> std::io::Result<Child> {
     #[cfg(target_os = "windows")]
     {
-        Command::new("cmd").args(["/C", "start", "", url]).spawn()
+        let mut cmd = Command::new("cmd");
+        no_window(&mut cmd).args(["/C", "start", "", url]).spawn()
     }
     #[cfg(target_os = "macos")]
     {
@@ -152,7 +161,8 @@ pub fn open_in_editor(path: &Path, editor_command: Option<&str>) -> std::io::Res
 
     #[cfg(target_os = "windows")]
     {
-        Command::new("cmd").args(["/C", editor, p.as_ref()]).spawn()
+        let mut cmd = Command::new("cmd");
+        no_window(&mut cmd).args(["/C", editor, p.as_ref()]).spawn()
     }
     #[cfg(not(target_os = "windows"))]
     {
